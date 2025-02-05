@@ -62,7 +62,7 @@ You can also complete the steps in R (replace with your paths/username when need
 
 ```r
 # Step 1
-setwd("~/jsc370")
+setwd("~/Documents")
 dir.create("JSC370-labs")
 setwd("JSC370-labs")
 
@@ -88,12 +88,7 @@ Once you are done setting up the project, you can now start working with the MET
 ## Setup in R
 
 1. Load the `data.table` (and the `dtplyr` and `dplyr` packages).
-```{r}
-#install.packages("data.table")
-library(data.table)
-library(dtplyr)
-library(dplyr)
-```
+
 2. Load the met data from https://raw.githubusercontent.com/JSC370/JSC370-2024/main/data/met_all_2023.gz, and also the station data. For the latter, you can use the code we used during lecture to pre-process the stations data:
 
 ```{r stations-data, eval = FALSE}
