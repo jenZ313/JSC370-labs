@@ -562,6 +562,84 @@ the most representative, the median, station per state. This time,
 instead of looking at one variable at a time, look at the euclidean
 distance. If multiple stations show in the median, select the one
 located at the lowest latitude.</p>
+<pre class="r"><code>medians_by_state &lt;- met[, .(
+  temp_50 = quantile(temp, probs = 0.5, na.rm = TRUE),
+  wind.sp_50 = quantile(wind.sp, probs = 0.5, na.rm = TRUE)
+), by = STATE]
+
+met &lt;- merge(met, medians_by_state, by = &quot;STATE&quot;, all.x = TRUE)
+met[, eudist := sqrt((temp - temp_50)^2 + (wind.sp - wind.sp_50)^2)]
+
+
+most_representative_stations &lt;- met[
+  , .SD[which.min(eudist)][order(lat)][1], 
+  by = STATE
+]
+
+
+result &lt;- most_representative_stations[, .(
+  STATE,
+  USAFID,
+  temp,
+  wind.sp,
+  eudist,
+  lat,
+  lon
+)]
+
+result</code></pre>
+<pre><code>## Key: &lt;STATE&gt;
+##      STATE USAFID  temp wind.sp eudist    lat      lon
+##     &lt;char&gt;  &lt;int&gt; &lt;num&gt;   &lt;num&gt;  &lt;num&gt;  &lt;num&gt;    &lt;num&gt;
+##  1:     AL 720265  25.3     1.5      0 32.915  -85.963
+##  2:     AR 720175  25.6     2.1      0 33.636  -91.756
+##  3:     AZ 720339  29.0     3.1      0 32.150 -111.167
+##  4:     CA 722869  21.1     2.6      0 33.952 -117.438
+##  5:     CO 720531  18.9     2.6      0 38.783 -108.067
+##  6:     CT 725027  22.2     2.1      0 41.510  -72.828
+##  7:     DE 724088  24.4     2.6      0 39.133  -75.467
+##  8:     FL 720373  27.0     2.6      0 28.000  -82.164
+##  9:     GA 720257  26.0     1.5      0 31.397  -84.895
+## 10:     IA 720293  21.0     2.6      0 42.453  -91.948
+## 11:     ID 720322  20.0     2.1      0 48.299 -116.560
+## 12:     IL 720319  22.2     2.1      0 39.016  -87.650
+## 13:     IN 720266  22.0     2.1      0 41.275  -85.840
+## 14:     KS 720426  23.3     3.6      0 37.158  -95.778
+## 15:     KY 720353  23.0     1.5      0 36.611  -83.738
+## 16:     LA 720467  27.8     1.5      0 30.817  -89.867
+## 17:     MA 725059  21.7     2.6      0 42.470  -71.289
+## 18:     MD 720334  24.4     2.1      0 39.167  -77.167
+## 19:     ME 726060  18.9     2.1      0 43.642  -70.304
+## 20:     MI 720113  20.6     2.1      0 42.543  -83.178
+## 21:     MN 720258  19.0     2.1      0 46.619  -93.310
+## 22:     MO 720306  23.3     2.1      0 38.960  -94.371
+## 23:     MS 720541  26.0     1.5      0 34.383  -89.550
+## 24:     MT 726676  18.3     3.1      0 47.133 -104.800
+## 25:     NC 720274  24.0     1.5      0 34.273  -78.715
+## 26:     ND 720491  18.0     3.6      0 46.217  -97.633
+## 27:     NE 720308  21.7     3.1      0 41.196  -96.112
+## 28:     NH 726050  18.9     1.5      0 43.205  -71.503
+## 29:     NJ 720407  23.3     1.5      0 39.928  -74.292
+## 30:     NM 722678  24.4     3.1      0 36.741 -104.502
+## 31:     NV 720549  27.0     2.6      0 39.183 -119.733
+## 32:     NY 722098  20.6     2.1      0 40.960  -72.252
+## 33:     OH 720397  21.7     2.6      0 39.217  -82.233
+## 34:     OK 720342  26.7     3.1      0 35.864  -98.421
+## 35:     OR 720365  17.2     2.1      0 42.070 -124.290
+## 36:     PA 720304  21.1     1.5      0 40.100  -75.267
+## 37:     RI 722151  22.2     2.6      0 41.350  -71.799
+## 38:     SC 720120  25.0     1.5      0 32.217  -80.700
+## 39:     SD 720624  20.0     3.6      0 44.016  -97.086
+## 40:     TN 720974  24.0     1.5      0 35.178  -86.066
+## 41:     TX 720110  29.0     3.1      0 30.784  -98.662
+## 42:     UT 720567  26.1     4.1      0 41.552 -112.062
+## 43:     VA 720278  23.4     1.5      0 36.687  -77.483
+## 44:     VT 720492  18.9     1.5      0 44.567  -72.017
+## 45:     WA 720254  18.0     0.0      0 46.683 -122.983
+## 46:     WI 720327  18.6     2.1      0 44.892  -91.868
+## 47:     WV 724120  21.1     1.5      0 37.784  -81.123
+## 48:     WY 722221  18.3     3.6      0 41.037 -107.492
+##      STATE USAFID  temp wind.sp eudist    lat      lon</code></pre>
 <p>Knit the doc and save it on GitHub.</p>
 </div>
 <div id="question-3-in-the-middle" class="section level2">
