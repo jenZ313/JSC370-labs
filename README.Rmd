@@ -1,8 +1,9 @@
 ---
 title: "Lab 05 - Data Wrangling"
 output:
-  html_document:
+  html_document: 
     html_preview: false
+    theme: cosmo
 link-citations: yes
 ---
 
@@ -88,10 +89,14 @@ Once you are done setting up the project, you can now start working with the MET
 ## Setup in R
 
 1. Load the `data.table` (and the `dtplyr` and `dplyr` packages).
-
+```{r}
+library(data.table)
+library(dtplyr)
+library(dplyr)
+```
 2. Load the met data from https://raw.githubusercontent.com/JSC370/JSC370-2024/main/data/met_all_2023.gz, and also the station data. For the latter, you can use the code we used during lecture to pre-process the stations data:
 
-```{r stations-data, eval = FALSE}
+```{r stations-data}
 # Download the data
 stations <- fread("ftp://ftp.ncdc.noaa.gov/pub/data/noaa/isd-history.csv")
 stations[, USAF := as.integer(USAF)]
@@ -112,12 +117,23 @@ stations[, n := 1:.N, by = .(USAF)]
 stations <- stations[n == 1,][, n := NULL]
 
 # Read in the met data
+met <- data.table::fread("met_all.gz")
 ```
 
 3. Merge the data as we did during the lecture. Use the `merge()` code and you can also try the tidy way with `left_join()`
 
 ```{r}
+met <- merge(
+  x = met,
+  y = stations,
+  all.x = TRUE, all.y = FALSE,
+  by.x = "USAFID", by.y = "USAF"
+)
 
+
+#met <- left_join(
+#  met, stations, by = c("USAFID" = "USAF")
+#)
 ```
 
 
@@ -127,7 +143,27 @@ Across all weather stations, what stations have the median values of temperature
 
 ```{r}
 
+medians <- met[, .(
+  temp_50 = quantile(temp, probs = 0.5, na.rm = TRUE),
+  wind.sp_50 = quantile(wind.sp, probs = 0.5, na.rm = TRUE),
+  atm.press_50 = quantile(atm.press, probs = 0.5, na.rm = TRUE)
+)]
+
+met[, temp_dist := abs(temp - medians$temp_50)]
+median_temp_station <- met[order(temp_dist)][1]
+
+met[, wind.sp_dist := abs(wind.sp - medians$wind.sp_50)]
+median_wind.sp_station <- met[order(wind.sp_dist)][1]
+
+met[, atm.press_dist := abs(atm.press - medians$atm.press_50)]
+median_atm.press_station <- met[order(atm.press_dist)][1]
+
+median_temp_station[, .(USAFID, STATE, temp, temp_dist)]
+median_wind.sp_station[, .(USAFID, STATE, wind.sp, wind.sp_dist)]
+median_atm.press_station[, .(USAFID, STATE, atm.press, atm.press_dist)]
 ```
+
+Station 720113 is closest to the median temperature, while station 690150 is closest to both the median wind speed and atmospheric pressure, so the stations do not fully coincide.
 
 Knit the document, commit your changes, and save it on GitHub. Don't forget to add `README.md` to the tree, the first time you render it.
 
