@@ -93,6 +93,7 @@ Once you are done setting up the project, you can now start working with the MET
 library(data.table)
 library(dtplyr)
 library(dplyr)
+library(ggplot2)
 ```
 2. Load the met data from https://raw.githubusercontent.com/JSC370/JSC370-2024/main/data/met_all_2023.gz, and also the station data. For the latter, you can use the code we used during lecture to pre-process the stations data:
 
@@ -210,6 +211,34 @@ For each state, identify what is the station that is closest to the mid-point of
 
 ```{r}
 
+library(leaflet)
+
+state_midpoints <- met[, .(
+  mid_lat = mean(lat, na.rm = TRUE),
+  mid_lon = mean(lon, na.rm = TRUE)
+), by = STATE]
+
+met <- merge(met, state_midpoints, by = "STATE", all.x = TRUE)
+met[, dist_to_mid := sqrt((lat - mid_lat)^2 + (lon - mid_lon)^2)]
+closest_to_midpoint <- met[, .SD[which.min(dist_to_mid)], by = STATE]
+
+
+combined_stations <- rbindlist(list(
+  most_representative_stations[, .(STATE, USAFID, lat, lon, type = "representative")],
+  closest_to_midpoint[, .(STATE, USAFID, lat, lon, type = "midpoint")]
+), use.names = TRUE)
+
+
+leaflet(data = combined_stations) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lng = ~lon,
+    lat = ~lat,
+    color = ~ifelse(type == "representative", "coral", "lightblue"),
+    label = ~paste("USAFID:", USAFID, "<br>Type:", type),
+    radius = 5
+  )
+
 ```
 
 Knit the doc and save it on GitHub.
@@ -225,6 +254,28 @@ Start by computing the states' average temperature. Use that measurement to clas
 - High: temp >= 25
 
 ```{r}
+state_avg_temp <- met[, .(
+  avg_temp = mean(temp, na.rm = TRUE),
+  avg_wind_sp = mean(wind.sp, na.rm = TRUE),
+  avg_atm_press = mean(atm.press, na.rm = TRUE)
+), by = STATE]
+
+
+state_avg_temp[, temp_level := fifelse(
+  avg_temp < 20, "Low",
+  fifelse(avg_temp < 25, "Mid", "High")
+)]
+
+
+summary_table <- state_avg_temp[, .(
+  num_states = .N,
+  avg_temp = mean(avg_temp, na.rm = TRUE),
+  avg_wind_sp = mean(avg_wind_sp, na.rm = TRUE),
+  avg_atm_press = mean(avg_atm_press, na.rm = TRUE)
+), by = temp_level]
+
+
+summary_table
 
 ```
 
@@ -239,6 +290,23 @@ Once you are done with that, you can compute the following:
 All by the levels described before.
 
 ```{r}
+met[, temp_level := fifelse(
+  temp < 20, "Low",
+  fifelse(temp < 25, "Mid", "High")
+)]
+
+station_med <- met[, .(
+  num_records = .N, 
+  num_na = sum(is.na(temp) | is.na(wind.sp) | is.na(atm.press)), 
+  num_stations = uniqueN(USAFID), 
+  num_states = uniqueN(STATE), 
+  avg_temp = mean(temp, na.rm = TRUE),  
+  avg_wind_sp = mean(wind.sp, na.rm = TRUE), 
+  avg_atm_press = mean(atm.press, na.rm = TRUE)  
+), by = temp_level]
+
+station_med
+
 
 ```
 
@@ -254,5 +322,32 @@ Let's practice running regression models with smooth functions on X. We need the
 - fit both a linear model and a spline model (use `gam()` with a cubic regression spline on wind speed). Summarize and plot the results from the models and interpret which model is the best fit and why.
 
 ```{r}
+# install.packages("mgcv")
+library(mgcv)
+
+
+station_med <- met[, .(
+  avg_temp = mean(temp, na.rm = TRUE),
+  avg_atm_press = mean(atm.press, na.rm = TRUE)
+), by = .(USAFID)]
+
+station_med_lt <- lazy_dt(station_med) |>
+  filter(between(avg_atm_press, 1000, 1020)) |>
+  collect()
+
+ggplot(station_med_lt, aes(x = avg_atm_press, y = avg_temp)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "coral") +
+  geom_smooth(method = "gam", formula = y ~ s(x, bs = "cr"), col = "lightblue")
+
+lm_mod <- lm(avg_temp ~ avg_atm_press, data = station_med_lt)
+summary(lm_mod)
+
+gam_mod <- gam(avg_temp ~ s(avg_atm_press, bs = "cr", k = 20), data = station_med_lt)
+summary(gam_mod)
+plot(gam_mod)
 
 ```
+
+
+The linear model shows a strong negative relationship between atmospheric pressure and temperature but only explains 20.7% of the variation. The GAM model fits better because it captures the non-linear pattern and explains more variation (27.6%), making it the better choice.
