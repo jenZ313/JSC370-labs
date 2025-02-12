@@ -48,7 +48,6 @@ stringr::str_extract(counts, "[0-9,]+")
 
  - How many sars-cov-2 papers are there?
 
-
 _Answer here._
 
 There are 247,751 sars-cov-2 paper.
@@ -72,8 +71,10 @@ The parameters passed to the query are documented [here](https://www.ncbi.nlm.ni
 ```{r papers-covid-toronto, eval=FALSE}
 library(httr)
 query_ids <- GET(
-  url   = "BASELINE URL",
-  query = list("QUERY PARAMETERS")
+  url   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+  query = list(db= "pubmed",
+               term="covid19 toronto",
+               retmax=300)
 )
 
 # Extracting the content of the response of GET
@@ -98,10 +99,12 @@ following lines of code:
 ids <- as.character(ids)
 
 # Find all the ids 
-ids <- stringr::str_extract_all(ids, "PATTERN")[[1]]
+ids <- stringr::str_extract_all(ids, "<Id>[0-9]+</Id>\n")[[1]]
+
 
 # Remove all the leading and trailing <Id> </Id>. Make use of "|"
-ids <- stringr::str_remove_all(ids, "PATTERN")
+ids <- stringr::str_remove_all(ids, "<Id>|</Id>\n")
+
 ```
 
 With the ids in hand, we can now try to get the abstracts of the papers. As
@@ -119,9 +122,13 @@ before, we will need to coerce the contents (results) to a list using:
     
 ```{r get-abstracts, eval = FALSE}
 publications <- GET(
-  url   = "BASELINE URL HERE",
+  url   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
   query = list(
-    "PARAMETERS OF THE QUERY"
+    db=" pubmed",
+    rettype="abstract",
+               id=paste(ids, collapse = ","),
+               retmax=300
+    
     )
 )
 
