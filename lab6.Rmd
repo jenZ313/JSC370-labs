@@ -1,6 +1,9 @@
 ---
 title: "Lab 06 - Regular Expressions and Web Scraping"
-output: html_document
+output: 
+  html_document: 
+    toc: true
+    theme: cosmo
 ---
 
 ```{r setup, echo=FALSE}
@@ -149,9 +152,10 @@ Using the function `stringr::str_extract_all()` applied on `publications_txt`, c
 Write a regular expression that captures all such instances
 
 ```{r univ-institute-regex, eval = FALSE}
+library(stringr) 
 institution <- str_extract_all(
   publications_txt,
-  "[YOUR REGULAR EXPRESSION HERE]"
+  "University\\s+of\\s+[[:alpha:]]+|[[:alpha:]]+\\s+Institute\\s+of\\s+[[:alpha:]]+"
   ) 
 institution <- unlist(institution)
 as.data.frame(table(institution))
@@ -166,8 +170,8 @@ And tabulate the results
 
 ```{r school-department, eval = FALSE}
 schools_and_deps <- str_extract_all(
-  abstracts_txt,
-  "[YOUR REGULAR EXPRESSION HERE]"
+  publications_txt,
+  "School\\s+of\\s+[[:alpha:]]+|Department\\s+of\\s+[[:alpha:]]+"
   )
 as.data.frame(table(schools_and_deps))
 ```
@@ -193,32 +197,43 @@ Now, extract the abstract and article title for each one of the elements of
 take advantage of vectorization of `stringr::str_extract`
 
 ```{r extracting-last-bit, eval = FALSE}
-abstracts <- str_extract(pub_char_list, "[YOUR REGULAR EXPRESSION]")
-abstracts <- str_remove_all(abstracts, "[CLEAN ALL THE HTML TAGS]")
-abstracts <- str_remove_all(abstracts, "[CLEAN ALL EXTRA WHITE SPACE AND NEW LINES]")
+abstracts <- str_extract(pub_char_list, "<Abstract>(\n|.)+</Abstract>")
+abstracts <- str_remove_all(abstracts, "</?[[:alnum:]]+>")
+abstracts <- str_remove_all(abstracts, "\\s+")
+
+table(is.na(abstracts))
 ```
 
   - How many of these don't have an abstract? 
 
 _Answer here._
 
+15.
+
 Now, the title
 
 ```{r process-titles, eval = FALSE}
-titles <- str_extract(pub_char_list, "[YOUR REGULAR EXPRESSION]")
-titles <- str_remove_all(titles, "[CLEAN ALL THE HTML TAGS]")
+titles <- str_extract(pub_char_list, "<ArticleTitle>(\\n|.)+</ArticleTitle>")
+titles <- str_remove_all(titles, "</?[[:alnum:]]+>")
+titles <- str_remove_all(titles, "\\s+")
+
+table(is.na(titles))
 ```
 
 - How many of these don't have a title ? 
 
 _Answer here._
 
+They all have titles.
+
 Finally, put everything together into a single `data.frame` and use
 `knitr::kable` to print the results
 
 ```{r build-db, eval = FALSE}
 database <- data.frame(
-  "[DATA TO CONCATENATE]"
+  id=ids,
+  Title = titles,
+  Abstract = abstracts
 )
 knitr::kable(database)
 ```
