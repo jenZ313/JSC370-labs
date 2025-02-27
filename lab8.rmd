@@ -7,6 +7,14 @@ output: html_document
 
 ```
 
+
+## GitHub Link
+
+The rendered document is available on GitHub:  
+[https://jenz313.github.io/JSC370-labs/lab8.html
+](https://jenz313.github.io/JSC370-labs/lab8.html
+)
+
 # Learning goals
 
 - Use `unnest_tokens()` and `unnest_ngrams()` to extract tokens and ngrams from text
