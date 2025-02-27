@@ -8,7 +8,7 @@ output: html_document
 ```
 
 
-## GitHub Link
+# GitHub Link
 
 The rendered document is available on GitHub:  
 [https://jenz313.github.io/JSC370-labs/lab8.html

@@ -2610,8 +2610,8 @@ display: none;
 </div>
 
 
-<div id="github-link" class="section level2">
-<h2>GitHub Link</h2>
+<div id="github-link" class="section level1">
+<h1>GitHub Link</h1>
 <p>The rendered document is available on GitHub:<br />
 <a href="https://jenz313.github.io/JSC370-labs/lab8.html">https://jenz313.github.io/JSC370-labs/lab8.html</a></p>
 </div>
@@ -2742,8 +2742,8 @@ tokens |&gt;
 <pre class="r"><code>tokens |&gt;
   count(word, sort=TRUE) |&gt;
   wordcloud2(size=0.5, color=&quot;random-light&quot;)</code></pre>
-<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-9b92640e6cac0595bf34" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-9b92640e6cac0595bf34">{"x":{"word":["a","and","at","for","he","in","is","no","of","on","patient","right","she","the","then","this","to","was","were","with"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":90,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
+<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-1d406a20789d4a760070" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-1d406a20789d4a760070">{"x":{"word":["a","and","at","for","he","in","is","no","of","on","patient","right","she","the","then","this","to","was","were","with"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":90,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
 <p>The result does make sense but is not very helpful since it contains
 mostly meaningless words like “the” and “on”, the only useful word here
 is “patient”.</p>
@@ -2796,8 +2796,8 @@ tokens |&gt;
 <pre class="r"><code>tokens |&gt;
   count(word, sort=TRUE) |&gt;
   wordcloud2(size=0.4, color=&quot;random-light&quot;)</code></pre>
-<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-b44b06a2a9e9cffb02e2" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-b44b06a2a9e9cffb02e2">{"x":{"word":["anesthesia","blood","diagnosis","history","incision","left","normal","pain","patient","performed","placed","procedure","removed","right","room","skin","time","well","will","without"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":72,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
+<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-78534346cef3fb684c80" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-78534346cef3fb684c80">{"x":{"word":["anesthesia","blood","diagnosis","history","incision","left","normal","pain","patient","performed","placed","procedure","removed","right","room","skin","time","well","will","without"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":72,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
 <p>The result is much better without stopwords, it shows meaningful
 words like “skin” and “anesthesia” that are not shown in the previous
 part. It still contains words like “also” and “used”, which I further
@@ -2833,8 +2833,8 @@ tokens_bigram |&gt;
 <pre class="r"><code>tokens_bigram |&gt;
   count(ngram, sort=TRUE) |&gt;
   wordcloud2(size=0.2, color=&quot;random-light&quot;)</code></pre>
-<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-c92401182f32c6e9f141" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-c92401182f32c6e9f141">{"x":{"word":["anesthesia general","blood loss","blood pressure","complications none","dr x","estimated blood","medical history","operating room","patient tolerated","physical examination","postoperative diagnosis","preoperative diagnosis","procedure performed","procedure well","recovery room","stable condition","sterile fashion","supine position","vital signs","year old"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":36,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
+<div class="wordcloud2 html-widget html-fill-item" id="htmlwidget-e6d779b68a734c0de325" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e6d779b68a734c0de325">{"x":{"word":["anesthesia general","blood loss","blood pressure","complications none","dr x","estimated blood","medical history","operating room","patient tolerated","physical examination","postoperative diagnosis","preoperative diagnosis","procedure performed","procedure well","recovery room","stable condition","sterile fashion","supine position","vital signs","year old"],"freq":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":36,"backgroundColor":"white","gridSize":0,"minRotation":-0.7853981633974483,"maxRotation":0.7853981633974483,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
 <hr />
 </div>
 <div id="question-5-examining-words" class="section level2">
